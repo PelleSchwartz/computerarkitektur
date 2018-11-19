@@ -1,46 +1,19 @@
 //============================================================================
 // Name        : simulator.cpp
-// Author      : 
+// Author      : Pelle Schwartz, Ramus Menzer
 // Version     :
-// Copyright   : Your copyright notice
-// Description : Hello World in C++, Ansi-style
+// Copyright   : Please dont copy all of it
+// Description : Risc-V Simulator
 //============================================================================
-
-
 
 
 #include <iostream>
 using namespace std;
 
 
+//function prototypes:
+static int readBin2Mem(FILE *ptr_myfile, uint32_t * mem_ptr);
 
-
-
-
-
-static int readBin2Mem(FILE *ptr_myfile, uint32_t * mem_ptr){
-	unsigned int read = 0;
-	int counter = 0;
-	if (!ptr_myfile)
-	{
-		printf("Unable to open file!");
-		return 0;
-	}
-	fseek(ptr_myfile, 0, SEEK_END);
-	int size = ftell(ptr_myfile); // get current file pointer
-	rewind(ptr_myfile);
-	printf("size: %d \n",size);
-	for ( counter=1; counter <= size/4; counter++)
-	{
-		fread(&read,sizeof(int32_t),1,ptr_myfile);
-
-		printf("\n %.8X ", read);
-		*mem_ptr = read;
-		mem_ptr++;
-	}
-	fclose(ptr_myfile);
-	return counter;
-}
 
 
 
@@ -53,11 +26,11 @@ int main()
 	uint32_t * mem_ptr = &mem[0];
 	ptr_myfile = fopen("shift.bin","rb");
 
-	int instructions = readBin2Mem(ptr_myfile,mem_ptr);
+	int num_ins = readBin2Mem(ptr_myfile,mem_ptr);
 
-	printf(" \n %X" , *mem_ptr);
-	for (int i = 0; i < instructions; i++){
 
+	for (int i = 0; i < num_ins; i++){
+		uint32_t instruction = *mem_ptr
 		// TODO go through each instruction set.
 
 		break;
@@ -67,3 +40,29 @@ int main()
 
 	return 0;
 }
+
+
+static int readBin2Mem(FILE *ptr_myfile, uint32_t * mem_ptr){
+	unsigned int read = 0;
+	int counter = 0;
+	if (!ptr_myfile)
+	{
+		printf("Unable to open file!");
+		return 0;
+	}
+	fseek(ptr_myfile, 0, SEEK_END);
+	int size = ftell(ptr_myfile)/4; // get current file pointer
+	rewind(ptr_myfile);
+	printf("size: %d \n",size);
+	for ( counter=1; counter <= size; counter++)
+	{
+		fread(&read,sizeof(int32_t),1,ptr_myfile);
+
+		printf("\n %.8X ", read);
+		*mem_ptr = read;
+		mem_ptr++;
+	}
+	fclose(ptr_myfile);
+	return size;
+}
+
