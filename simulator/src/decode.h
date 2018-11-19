@@ -1,4 +1,5 @@
 #include "typenames.h"
+#include "func3.h"
 #include <iostream>
 
 using namespace std;
@@ -9,37 +10,47 @@ struct line{
   unsigned char name;
 };
 
-char opcode(line &a){
+void decoder(line &a){
   switch (a.instr & 0x7F) {
     case 51: //R
-      return 'r';
+      a.type = 'r';
+      a.name = rTypeFunc3(a.instr);
       break;
     case 67: //JAL of I-type returns
-      return 'i';
+      a.type = 'i';
+      a.name = I_JALR;
       break;
     case 3: //I
-      return 'i';
+      a.type = 'i';
+      a.name = i3TypeFunc3(a.instr);
       break;
     case 19: //I or IR
-      return 'i';
+      a.type = 'i';
+      a.name = i19TypeFunc3(a.instr);
       break;
     case 115: //I Ecall
-      return 'i';
+      a.type = 'i';
+      a.name = I_ECALL;
       break;
     case 35: //S
-      return 's';
+      a.type = 's';
+      a.name = sTypeFunc3(a.instr);
       break;
-    case 55: //U
-      return 'u';
+    case 55: //LUI of U-type returns
+      a.type = 'u';
+      a.name = U_LUI;
       break;
-    case 23: //U
-      return 'u';
+    case 23: //AUIPC of U-type returns
+      a.type = 'u';
+      a.name = U_AUIPC;
       break;
     case 99: //B
-      return 'b';
+      a.type = 'b';
+      a.name = bTypeFunc3(a.instr);
       break;
     case 111: //J
-      return 'b';
+      a.type = 'j';
+      a.name = J_JAL;
       break;
     default:
       return 0;
