@@ -13,42 +13,18 @@
 using namespace std;
 
 
-struct rec
-{
-	int x,y,z;
-};
-
-
-unsigned int
-reverse(register unsigned int x)
-{
-    x = (((x & 0xaaaaaaaa) >> 1) | ((x & 0x55555555) << 1));
-    x = (((x & 0xcccccccc) >> 2) | ((x & 0x33333333) << 2));
-    x = (((x & 0xf0f0f0f0) >> 4) | ((x & 0x0f0f0f0f) << 4));
-    x = (((x & 0xff00ff00) >> 8) | ((x & 0x00ff00ff) << 8));
-    return((x >> 16) | (x << 16));
-
-}
 
 
 
-int main()
-{
-	printf("Testrun: \n");
-	int counter;
-	FILE *ptr_myfile;
-	uint32_t mem[2^12];
-	uint32_t reg[32];
-	uint32_t * stack_ptr = &mem[0];
 
 
-
+static int readBin2Mem(FILE *ptr_myfile, uint32_t * mem_ptr){
 	unsigned int read = 0;
-	ptr_myfile = fopen("shift.bin","rb");
+	int counter = 0;
 	if (!ptr_myfile)
 	{
 		printf("Unable to open file!");
-		return 1;
+		return 0;
 	}
 	fseek(ptr_myfile, 0, SEEK_END);
 	int size = ftell(ptr_myfile); // get current file pointer
@@ -58,14 +34,36 @@ int main()
 	{
 		fread(&read,sizeof(int32_t),1,ptr_myfile);
 
-		uint32_t n = read;
-
 		printf("\n %.8X ", read);
-
-
+		*mem_ptr = read;
+		mem_ptr++;
 	}
 	fclose(ptr_myfile);
-	return 0;
+	return counter;
 }
 
 
+
+int main()
+{
+	printf("Testrun: \n");
+	FILE *ptr_myfile; //file pointer
+	uint32_t mem[2^12]; // Memory array, can be increased if needed.
+	uint32_t reg[32]; // registers array
+	uint32_t * mem_ptr = &mem[0];
+	ptr_myfile = fopen("shift.bin","rb");
+
+	int instructions = readBin2Mem(ptr_myfile,mem_ptr);
+
+	printf(" \n %X" , *mem_ptr);
+	for (int i = 0; i < instructions; i++){
+
+		// TODO go through each instruction set.
+
+		break;
+	}
+
+
+
+	return 0;
+}
