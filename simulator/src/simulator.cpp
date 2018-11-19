@@ -6,7 +6,7 @@
 // Description : Risc-V Simulator
 //============================================================================
 
-
+#include "typenames.h"
 #include <iostream>
 using namespace std;
 
@@ -21,8 +21,8 @@ int main()
 {
 	printf("Testrun: \n");
 	FILE *ptr_myfile; //file pointer
-	uint32_t mem[2^12]; // Memory array, can be increased if needed.
-	uint32_t reg[32]; // registers array
+	uint32_t mem[2^12] = {0}; // Memory array, can be increased if needed.
+	uint32_t reg[32] = {0}; // registers array
 	uint32_t * mem_ptr = &mem[0];
 	ptr_myfile = fopen("shift.bin","rb");
 
@@ -32,7 +32,7 @@ int main()
 	for (int i = 0; i < num_ins; i++){
 		uint32_t instruction = *mem_ptr
 		// TODO go through each instruction set.
-
+				uint32_t val = 12;
 		break;
 	}
 
