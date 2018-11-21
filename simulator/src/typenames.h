@@ -68,9 +68,4 @@
 #define J_JAL 38
 
 
-
-
-
-
-
 #endif /* TYPENAMES_H_ */

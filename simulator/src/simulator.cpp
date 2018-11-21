@@ -5,12 +5,14 @@
 // Copyright   : Please dont copy all of it
 // Description : Risc-V Simulator
 //============================================================================
-
 #include "typenames.h"
-#include "func3.h"
 #include "decode.h"
+#include "func3.h"
+#include "processes.h"
 #include <iostream>
 using namespace std;
+
+#define MEMORY_SIZE (12^2)
 
 
 //function prototypes:
@@ -23,19 +25,26 @@ int main()
 {
 	printf("Testrun: \n");
 	FILE *ptr_myfile; //file pointer
-	uint32_t mem[2^12] = {0}; // Memory array, can be increased if needed.
+	uint32_t mem[MEMORY_SIZE] = {0}; // Memory array, can be increased if needed.
 	uint32_t reg[32] = {0}; // registers array
 	uint32_t * mem_ptr = &mem[0];
-	ptr_myfile = fopen("shift.bin","rb");
+	uint32_t * reg_ptr = &reg[0];
+	ptr_myfile = fopen("addneg.bin","rb");
 
-	int num_ins = readBin2Mem(ptr_myfile,mem_ptr);
+	int num_ins = readBin2Mem(ptr_myfile,mem_ptr); //Reads binary file and returns the number of instructions.
 
+	//TODO: implement stackpointer aswell, should go into doInstruction.
 
 	for (int i = 0; i < num_ins; i++){
-		uint32_t instruction = *mem_ptr;
 		// TODO go through each instruction set.
+		line instruction;
+		instruction.instr = *mem_ptr;
+		instruction.name = 0;
+		instruction.type = '\n';
 
-		break;
+		decoder(instruction);
+		doInstruction(instruction, mem_ptr, reg_ptr);
+		mem_ptr++;
 	}
 
 
