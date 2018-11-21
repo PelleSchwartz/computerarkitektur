@@ -7,6 +7,8 @@
 //============================================================================
 
 #include "typenames.h"
+#include "func3.h"
+#include "decode.h"
 #include <iostream>
 using namespace std;
 
@@ -30,9 +32,9 @@ int main()
 
 
 	for (int i = 0; i < num_ins; i++){
-		uint32_t instruction = *mem_ptr
+		uint32_t instruction = *mem_ptr;
 		// TODO go through each instruction set.
-				uint32_t val = 12;
+
 		break;
 	}
 

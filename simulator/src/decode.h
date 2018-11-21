@@ -53,7 +53,6 @@ void decoder(line &a){
       a.name = J_JAL;
       break;
     default:
-      return 0;
       break;
   }
 }
