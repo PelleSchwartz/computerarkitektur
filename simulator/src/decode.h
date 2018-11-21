@@ -24,11 +24,11 @@ void decoder(line &a){
       a.type = 'i';
       a.name = i3TypeFunc3(a.instr);
       break;
-    case 19: //I or IR
+    case 19: //I
       a.type = 'i';
       a.name = i19TypeFunc3(a.instr);
       break;
-    case 115: //I Ecall
+    case 115: //SPECIAL CASE: Ecall of I-type
       a.type = 'i';
       a.name = I_ECALL;
       break;
@@ -36,11 +36,11 @@ void decoder(line &a){
       a.type = 's';
       a.name = sTypeFunc3(a.instr);
       break;
-    case 55: //LUI of U-type returns
+    case 55: //SPECIAL CASE: LUI of U-type
       a.type = 'u';
       a.name = U_LUI;
       break;
-    case 23: //AUIPC of U-type returns
+    case 23: //SPECIAL CASE: AUIPC of U-type
       a.type = 'u';
       a.name = U_AUIPC;
       break;
