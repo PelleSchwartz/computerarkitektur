@@ -7,37 +7,89 @@
 
 #include "rTypes.h"
 #include "processes.h"
+#include "fields.h"
 
 void add(line &instr, uint32_t * reg_ptr){
-	printf("adding");
+	uint32_t * rd,r1,r2;
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r2 = reg_ptr+((instr.instr & EXTRACT_R_R2)>>20);
+	*rd = *r1 + *r2;
+	printf("add x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_R_R1)>>15) , ((instr.instr & EXTRACT_R_R2)>>20));
 }
 
 void sub(line &instr, uint32_t * reg_ptr){
-	printf("substracting");
+	uint32_t * rd,r1,r2;
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r2 = reg_ptr+((instr.instr & EXTRACT_R_R2)>>20);
+	*rd = *r1 - *r2;
+	printf("sub x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_R_R1)>>15) , ((instr.instr & EXTRACT_R_R2)>>20));
 }
 
 void sll(line &instr, uint32_t * reg_ptr){
-	printf("sll'ing");
-}
-void sltu(line &instr, uint32_t * reg_ptr){
-	printf("sltu");
-}
-void xorr(line &instr, uint32_t * reg_ptr){
-	printf("xoring");
-}
-void srl(line &instr, uint32_t * reg_ptr){
-	printf("srl");
-}
-void sra(line &instr, uint32_t * reg_ptr){
-	printf("sra");
-}
-void slt(line &instr, uint32_t * reg_ptr){
-	printf("slt");
-}
-void orr(line &instr, uint32_t * reg_ptr){
-	printf("orr");
-}
-void andd(line &instr, uint32_t * reg_ptr){
-	printf("andd");
+	uint32_t * rd,r1,r2;
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r2 = reg_ptr+((instr.instr & EXTRACT_R_R2)>>20);
+	*rd = *r1<<(*r2);
+	printf("sll x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_R_R1)>>15) , ((instr.instr & EXTRACT_R_R2)>>20));
 }
 
+void sltu(line &instr, uint32_t * reg_ptr){
+	uint32_t * rd,r1,r2;
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r2 = reg_ptr+((instr.instr & EXTRACT_R_R2)>>20);
+	*rd = (*r1 < *r2) ? 1 : 0;
+	printf("sltu x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_R_R1)>>15) , ((instr.instr & EXTRACT_R_R2)>>20));
+}
+
+void xorr(line &instr, uint32_t * reg_ptr){
+	uint32_t * rd,r1,r2;
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r2 = reg_ptr+((instr.instr & EXTRACT_R_R2)>>20);
+	*rd = *r1 ^ *r2;
+	printf("xor x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_R_R1)>>15) , ((instr.instr & EXTRACT_R_R2)>>20));
+}
+void srl(line &instr, uint32_t * reg_ptr){
+	uint32_t * rd,r1,r2;
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r2 = reg_ptr+((instr.instr & EXTRACT_R_R2)>>20);
+	*rd = *r1>>(*r2);
+	printf("srl x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_R_R1)>>15) , ((instr.instr & EXTRACT_R_R2)>>20));
+}
+void sra(line &instr, uint32_t * reg_ptr){
+	uint32_t * rd,r1,r2;
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r2 = reg_ptr+((instr.instr & EXTRACT_R_R2)>>20);
+	*rd = *r1>>(*r2);
+	printf("sra x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_R_R1)>>15) , ((instr.instr & EXTRACT_R_R2)>>20));
+}
+void slt(line &instr, uint32_t * reg_ptr){
+	uint32_t * rd,r1,r2;
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r2 = reg_ptr+((instr.instr & EXTRACT_R_R2)>>20);
+	*rd = (*r1 < *r2) ? 1 : 0;
+	printf("slt x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_R_R1)>>15) , ((instr.instr & EXTRACT_R_R2)>>20));
+}
+void orr(line &instr, uint32_t * reg_ptr){
+	uint32_t * rd,r1,r2;
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r2 = reg_ptr+((instr.instr & EXTRACT_R_R2)>>20);
+	*rd = *r1 | *r2;
+	printf("or x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_R_R1)>>15) , ((instr.instr & EXTRACT_R_R2)>>20));
+}
+void andd(line &instr, uint32_t * reg_ptr){
+	uint32_t * rd,r1,r2;
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r2 = reg_ptr+((instr.instr & EXTRACT_R_R2)>>20);
+	*rd = *r1 & *r2;
+	printf("xor x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_R_R1)>>15) , ((instr.instr & EXTRACT_R_R2)>>20));
+}
