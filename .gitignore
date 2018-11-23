@@ -6,3 +6,9 @@
 .metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
 .metadata/version.ini
 ~$instructions.xlsx
+.metadata/.log
+.metadata/.plugins/org.eclipse.cdt.core/.log
+.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
+.metadata/version.ini
+*.xmi
+*.ini
