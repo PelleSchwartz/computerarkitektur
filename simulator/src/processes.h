@@ -21,6 +21,6 @@ void slt(line &instr, uint32_t reg_ptr);
 void orr(line &instr, uint32_t reg_ptr);
 void andd(line &instr, uint32_t reg_ptr);
 
-void doInstruction(line &instr, uint32_t * mem_ptr, uint32_t * reg_ptr);
+uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr);
 
 #endif /* PROCESSES_H_ */
