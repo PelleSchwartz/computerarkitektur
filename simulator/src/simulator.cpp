@@ -39,7 +39,6 @@ int main()
 
 	while (prgm_counter - &mem[0] < num_ins*4){
 		// TODO go through each instruction set.
-		printf("cnt-mem : %d \n",prgm_counter - &mem[0] );
 		printf("%.2X ", *prgm_counter);
 		printf("%.2X ", *(prgm_counter+1));
 		printf("%.2X ", *(prgm_counter+2));

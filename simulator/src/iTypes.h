@@ -5,11 +5,11 @@
  *      Author: psz
  */
 
-#ifndef ITYPE_H_
-#define ITYPE_H_
+#ifndef ITYPES_H_
+#define ITYPES_H_
 
 #include "processes.h"
-void jalr(line &instr, uint32_t * reg_ptr);
+uint8_t* jalr(line &instr, uint32_t * reg_ptr);
 void lb(line &instr, uint32_t * reg_ptr);
 void lh(line &instr, uint32_t * reg_ptr);
 void lw(line &instr, uint32_t * reg_ptr);
@@ -22,4 +22,4 @@ void ori(line &instr, uint32_t * reg_ptr);
 void andi(line &instr, uint32_t * reg_ptr);
 void ecall(line &instr, uint32_t * reg_ptr);
 
-#endif /* ITYPE_H_ */
+#endif /* ITYPES_H_ */
