@@ -19,8 +19,6 @@ using namespace std;
 static int readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr);
 
 
-uint32_t * register_pointer = 0;
-
 int main()
 {
 	printf("Testrun: \n");
@@ -32,8 +30,7 @@ int main()
 
 	uint8_t * prgm_counter = &mem[0];
 	uint32_t * reg_ptr = &reg[0];
-
-
+	reg[2] = (uint32_t)&mem[MEMORY_SIZE-1];
 
 	int num_ins = readBin2Mem(ptr_myfile,prgm_counter); //Reads binary file and returns the number of instructions.
 
