@@ -14,6 +14,7 @@ void lb(line &instr, uint32_t * reg_ptr);
 void lh(line &instr, uint32_t * reg_ptr);
 void lw(line &instr, uint32_t * reg_ptr);
 void lbu(line &instr, uint32_t * reg_ptr);
+void lwu(line &instr, uint32_t * reg_ptr);
 void addi(line &instr, uint32_t * reg_ptr);
 void slti(line &instr, uint32_t * reg_ptr);
 void sltiu(line &instr, uint32_t * reg_ptr);
