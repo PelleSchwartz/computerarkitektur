@@ -17,13 +17,13 @@ using namespace std;
 
 //function prototypes:
 static int readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr);
-
+void printReg(uint32_t* reg_ptr, int size);
 
 int main()
 {
 	printf("Testrun: \n");
 	FILE *ptr_myfile; //file pointer
-	ptr_myfile = fopen("addneg.bin","rb");
+	ptr_myfile = fopen("addpos.bin","rb");
 
 	uint8_t mem[MEMORY_SIZE] = {0}; // Memory array
 	uint32_t reg[32] = {0}; // registers array
@@ -58,6 +58,9 @@ int main()
 		if (instruction.name == I_ECALL){break;}
 		prgm_counter = doInstruction(instruction, prgm_counter, reg_ptr);
 	}
+
+	printReg(reg_ptr,32);
+
 	return 0;
 }
 
@@ -100,3 +103,9 @@ static int readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr){
 	return size; //number of instructions
 }
 
+void printReg(uint32_t* reg_ptr, int size){
+	for (int i = 0; i < size; i++){
+		printf("x%.2d: 0x%.8X \n", i, *reg_ptr);
+		reg_ptr++;
+	}
+}

@@ -59,24 +59,34 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 		lb(instr, reg_ptr);
 		break;
 	case I_LH:
+		lh(instr, reg_ptr);
 		break;
 	case I_LW:
+		lw(instr, reg_ptr);
 		break;
 	case I_LBU:
+		lbu(instr, reg_ptr);
 		break;
 	case I_LHU:
+		lhu(instr, reg_ptr);
 		break;
 	case I_ADDI:
+		addi(instr, reg_ptr);
 		break;
 	case I_SLTI:
+		slti(instr, reg_ptr);
 		break;
 	case I_SLTIU:
+		sltiu(instr, reg_ptr);
 		break;
 	case I_XORI:
+		xori(instr, reg_ptr);
 		break;
 	case I_ORI:
+		ori(instr, reg_ptr);
 		break;
 	case I_ANDI:
+		andi(instr, reg_ptr);
 		break;
 	case I_ECALL:
 		break;
