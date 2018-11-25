@@ -20,7 +20,7 @@ uint8_t* jalr(line &instr, uint32_t * reg_ptr){
 void lb(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15); // Stack pointer (could be any pointer though)
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
 	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20;
 	// TODO: check for the sign in the total 32-bit word.
 	uint8_t * sp = (uint8_t*) *rd;
@@ -31,7 +31,7 @@ void lb(line &instr, uint32_t * reg_ptr){
 void lh(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15); // Stack pointer (could be any pointer though)
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
 	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 	// TODO: check for the sign in the total 32-bit word.
 	uint8_t * sp = (uint8_t*) *rd;
@@ -43,7 +43,7 @@ void lh(line &instr, uint32_t * reg_ptr){
 void lw(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15); // Stack pointer (could be any pointer though)
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
 	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
 	uint8_t * sp = (uint8_t*) *rd;
@@ -54,7 +54,7 @@ void lw(line &instr, uint32_t * reg_ptr){
 void lbu(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15); // Stack pointer (could be any pointer though)
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
 	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20;
 
 	uint8_t * sp = (uint8_t*) *rd;
@@ -65,7 +65,7 @@ void lbu(line &instr, uint32_t * reg_ptr){
 void lhu(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15); // Stack pointer (could be any pointer though)
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
 	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
 	uint8_t * sp = (uint8_t*) *rd;
@@ -78,7 +78,7 @@ void addi(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	printf("addi rd : %d \n", *rd);
-	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 	printf("addi r1 : %d \n", *r1);
 	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 	printf("addi imm: %d \n", imm);
@@ -90,7 +90,7 @@ void addi(line &instr, uint32_t * reg_ptr){
 void slti(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
 	*rd = ((int32_t)*r1 < imm) ? 1 : 0;
@@ -99,7 +99,7 @@ void slti(line &instr, uint32_t * reg_ptr){
 void sltiu(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 	uint32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
 	*rd = ((uint32_t)*r1 < imm) ? 1 : 0;
@@ -108,7 +108,7 @@ void sltiu(line &instr, uint32_t * reg_ptr){
 void xori(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
 	*rd = *r1 ^ imm;
@@ -117,7 +117,7 @@ void xori(line &instr, uint32_t * reg_ptr){
 void ori(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
 	*rd = *r1 | imm;
@@ -125,7 +125,7 @@ void ori(line &instr, uint32_t * reg_ptr){
 void andi(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_R_R1)>>15);
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
 	*rd = *r1 & imm;
