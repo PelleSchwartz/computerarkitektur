@@ -19,3 +19,8 @@
 .metadata/version.ini
 simulator/.settings/language.settings.xml
 .metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
+simulator/.settings/language.settings.xml
+.metadata/version.ini
+.metadata/.plugins/org.eclipse.e4.workbench/workbench.xmi
+.metadata/.plugins/org.eclipse.cdt.core/.log
+.metadata/.log

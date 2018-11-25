@@ -56,6 +56,7 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 	case I_JALR:
 		return jalr(instr, reg_ptr);
 	case I_LB:
+		lb(instr, reg_ptr);
 		break;
 	case I_LH:
 		break;
