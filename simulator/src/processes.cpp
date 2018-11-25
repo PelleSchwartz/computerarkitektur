@@ -11,6 +11,7 @@
 #include "typenames.h"
 #include "rTypes.h"
 #include "iTypes.h"
+#include "bTypes.h"
 #include <iostream>
 using namespace std;
 
@@ -120,7 +121,7 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 
 
 	case B_BEQ:
-		break;
+		return beq(instr, reg_ptr);
 	case B_BNE:
 		break;
 	case B_BLT:
