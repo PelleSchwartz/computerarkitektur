@@ -33,7 +33,7 @@ void sll(line &instr, uint32_t * reg_ptr){
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 	r2 = reg_ptr+((instr.instr & EXTRACT_RBS_R2)>>20);
-	*rd = (int32_t)*r1<<((int32_t)*r2);
+	*rd = *r1<<(*r2);
 	printf("sll x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_RBS_R1)>>15) , ((instr.instr & EXTRACT_RBS_R2)>>20));
 }
 
@@ -67,7 +67,7 @@ void sra(line &instr, uint32_t * reg_ptr){
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 	r2 = reg_ptr+((instr.instr & EXTRACT_RBS_R2)>>20);
-	*rd = *r1>>(*r2);
+	*rd = (int32_t)*r1>>((int32_t)*r2);
 	printf("sra x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_RBS_R1)>>15) , ((instr.instr & EXTRACT_RBS_R2)>>20));
 }
 void slt(line &instr, uint32_t * reg_ptr){
@@ -75,7 +75,7 @@ void slt(line &instr, uint32_t * reg_ptr){
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 	r2 = reg_ptr+((instr.instr & EXTRACT_RBS_R2)>>20);
-	*rd = (*r1 < *r2) ? 1 : 0;
+	*rd = ((int32_t)*r1 < (int32_t)*r2) ? 1 : 0;
 	printf("slt x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_RBS_R1)>>15) , ((instr.instr & EXTRACT_RBS_R2)>>20));
 }
 void orr(line &instr, uint32_t * reg_ptr){
