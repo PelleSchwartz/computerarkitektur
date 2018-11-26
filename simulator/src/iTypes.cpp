@@ -17,6 +17,22 @@ uint8_t* jalr(line &instr, uint32_t * reg_ptr){
 	uint8_t* ra = (uint8_t*)(*(reg_ptr + 1)); //Return address
 	return ra;
 }
+
+uint8_t* jal(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter){
+//Jump and link
+	uint8_t* ra = (uint8_t*)(*(reg_ptr + 1)); //Return address
+
+	/* Build the tricky imm */
+	int32_t imm = *reg_ptr+((instr.instr & EXTRACT_J_IMM_20)>>11);
+	imm = imm | (*reg_ptr+(instr.instr & EXTRACT_J_IMM_19_12));
+	imm = imm | (*reg_ptr+((instr.instr & EXTRACT_J_IMM_11)>>9));
+	imm = imm | (*reg_ptr+((instr.instr & EXTRACT_J_IMM_10_1)>>20));
+
+
+	*ra = (uint32_t)prgm_counter;
+	return prgm_counter + imm;
+}
+
 void lb(line &instr, uint32_t * reg_ptr){
 		uint32_t * rd, *r1;
 		rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);

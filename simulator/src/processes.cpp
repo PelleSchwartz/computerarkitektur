@@ -12,6 +12,7 @@
 #include "rTypes.h"
 #include "iTypes.h"
 #include "bTypes.h"
+#include "usTypes.h"
 #include <iostream>
 using namespace std;
 
@@ -104,17 +105,22 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 		// S-type
 
 	case S_SB:
+		sb(instr, reg_ptr);
 		break;
 	case S_SH:
+		sh(instr, reg_ptr);
 		break;
 	case S_SW:
+		sw(instr, reg_ptr);
 		break;
 
 		//U-type
 
 	case U_LUI:
+		lui(instr, reg_ptr);
 		break;
 	case U_AUIPC:
+		auipc(instr, reg_ptr, prgm_counter);
 		break;
 
 		//B-type
@@ -123,20 +129,26 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 	case B_BEQ:
 		return beq(instr, reg_ptr, prgm_counter);
 	case B_BNE:
+		return bne(instr, reg_ptr, prgm_counter);
 		break;
 	case B_BLT:
+		return blt(instr, reg_ptr, prgm_counter);
 		break;
 	case B_BGE:
+		return bge(instr, reg_ptr, prgm_counter);
 		break;
 	case B_BLTU:
+		return bltu(instr, reg_ptr, prgm_counter);
 		break;
 	case B_BGEU:
+		return bgeu(instr, reg_ptr, prgm_counter);
 		break;
 
 		//J-type
 
 
 	case J_JAL:
+		return jal(instr, reg_ptr, prgm_counter);
 		break;
 
 	default:
