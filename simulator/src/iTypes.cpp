@@ -12,38 +12,54 @@
 using namespace std;
 
 
-uint8_t* jalr(line &instr, uint32_t * reg_ptr){
-//Jump and link
-	uint8_t* ra = (uint8_t*)(*(reg_ptr + 1)); //Return address
-	return ra;
+uint8_t * jalr(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter){
+	uint32_t *rd, *r1;
+	int32_t imm = 0;
+
+	imm = imm | (((int32_t)instr.isntr & EXTRACT_I_IMM_11_0)>>20);
+
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
+
+	*rd = (uint32_t)(prgm_counter+4);
+	//assuming that r1 contains the instr.address of the wanted next instruction, with some offsett imm.
+	//the content of r1-reg is a uint32_t, so it needs a cast to a pointer to the memory (which is a uint8_t-pointer)
+	return (uint8_t*)(*r1 + imm);
 }
 
-uint8_t* jal(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter){
+uint8_t * jal(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter){
 //Jump and link
-	uint8_t* ra = (uint8_t*)(*(reg_ptr + 1)); //Return address
+	uint32_t *rd, *r1;
+	int32_t imm = 0;
 
-	/* Build the tricky imm */
-	int32_t imm = *reg_ptr+((instr.instr & EXTRACT_J_IMM_20)>>11);
-	imm = imm | (*reg_ptr+(instr.instr & EXTRACT_J_IMM_19_12));
-	imm = imm | (*reg_ptr+((instr.instr & EXTRACT_J_IMM_11)>>9));
-	imm = imm | (*reg_ptr+((instr.instr & EXTRACT_J_IMM_10_1)>>20));
+	imm = imm | (((int32_t)instr.instr & EXTRACT_J_IMM_20)>>11);
+	imm = imm | ((int32_t)instr.instr & EXTRACT_J_IMM_19_12);
+	imm = imm | (((int32_t)instr.instr & EXTRACT_J_IMM_11)>>9);
+	imm = imm | (((int32_t)instr.instr & EXTRACT_J_IMM_10_1)>>20);
 
+	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 
-	*ra = (uint32_t)prgm_counter;
-	return prgm_counter + imm;
+	*rd = (uint32_t)(prgm_counter+4);
+
+	return prgm_counter + imm; //the prgm_counter is already a uint8_t-pointer, so NO cast needed.
 }
 
 void lb(line &instr, uint32_t * reg_ptr){
-		uint32_t * rd, *r1;
+		uint32_t *rd, *r1;
+		int32_t imm = 0;
+
+		imm = imm | (((int32_t)instr.isntr & EXTRACT_I_IMM_11_0)>>20);
+
 		rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-		r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
-		int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20;
-		// TODO: check for the sign in the total 32-bit word.
-		uint8_t * sp = (uint8_t*) *rd;
-		uint32_t data = (uint32_t)*(sp + imm);
+		r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
+
+		uint8_t * sp = (uint8_t*)*r1; //assuming that r1 contains the instr.address of the wanted next instruction
+		uint32_t data = (uint32_t)*(sp + imm); //sp is a uint8_t-pointer to a place i memory + offset imm.
+		//this address-value is hen cast to uint
 
 		*rd = data;
 }
+
 void lh(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
