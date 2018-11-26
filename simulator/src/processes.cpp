@@ -155,6 +155,6 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 		printf("Unknown input: %d \n", instr.name);
 		break;
 	}
-	//TODO MANGE FLERE!!
+
 	return prgm_counter + 4;
 }
