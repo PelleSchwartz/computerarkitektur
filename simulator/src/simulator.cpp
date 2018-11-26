@@ -12,7 +12,7 @@
 #include <iostream>
 using namespace std;
 
-#define MEMORY_SIZE (20000) //size of memory array , can be increased if needed.
+#define MEMORY_SIZE (4096) //size of memory array , can be increased if needed.
 
 
 //function prototypes:
@@ -23,7 +23,7 @@ int main()
 {
 	printf("Testrun: \n");
 	FILE *ptr_myfile; //file pointer
-	ptr_myfile = fopen("addlarge.bin","rb");
+	ptr_myfile = fopen("t13.bin","rb");
 
 	uint8_t mem[MEMORY_SIZE] = {0}; // Memory array
 	uint32_t reg[32] = {0}; // registers array
@@ -39,7 +39,7 @@ int main()
 
 	while (prgm_counter - &mem[0] < num_ins*4){
 		// TODO go through each instruction set.
-		printMem(&mem[0], num_ins);
+		//printMem(&mem[0], num_ins);
 
 		printf("\n NEXT LINE \n \n");
 
