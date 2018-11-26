@@ -18,15 +18,15 @@ uint8_t* jalr(line &instr, uint32_t * reg_ptr){
 	return ra;
 }
 void lb(line &instr, uint32_t * reg_ptr){
-	uint32_t * rd, *r1;
-	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
-	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20;
-	// TODO: check for the sign in the total 32-bit word.
-	uint8_t * sp = (uint8_t*) *rd;
-	uint32_t data = (uint32_t)*(sp + imm);
+		uint32_t * rd, *r1;
+		rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+		r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
+		int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20;
+		// TODO: check for the sign in the total 32-bit word.
+		uint8_t * sp = (uint8_t*) *rd;
+		uint32_t data = (uint32_t)*(sp + imm);
 
-	*rd = data;
+		*rd = data;
 }
 void lh(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
