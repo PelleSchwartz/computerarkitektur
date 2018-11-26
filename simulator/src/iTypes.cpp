@@ -55,7 +55,7 @@ void lb(line &instr, uint32_t * reg_ptr){
 
 		uint8_t * sp = (uint8_t*)*r1; //assuming that r1 contains the instr.address of the wanted next instruction
 		uint32_t data = (uint32_t)*(sp + imm); //sp is a uint8_t-pointer to a place i memory + offset imm.
-		//this address-value is hen cast to uint
+		//this address-value is hen cast to uint32_t value so that it can be put in the reg file.
 
 		*rd = data;
 }
