@@ -23,7 +23,7 @@ int main()
 {
 	printf("Testrun: \n");
 	FILE *ptr_myfile; //file pointer
-	ptr_myfile = fopen("addpos.bin","rb");
+	ptr_myfile = fopen("addlarge.bin","rb");
 
 	uint8_t mem[MEMORY_SIZE] = {0}; // Memory array
 	uint32_t reg[32] = {0}; // registers array
@@ -55,7 +55,11 @@ int main()
 		instruction.type = '\0';
 
 		decoder(instruction);
-		if (instruction.name == I_ECALL){break;}
+		printf("Instr name : %d \n" , instruction.name);
+		if (instruction.name == I_ECALL){
+			printf("ECALL");
+			return 0;
+		}
 		prgm_counter = doInstruction(instruction, prgm_counter, reg_ptr);
 	}
 

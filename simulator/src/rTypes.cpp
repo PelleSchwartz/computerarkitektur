@@ -16,7 +16,7 @@ void add(line &instr, uint32_t * reg_ptr){
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 	r2 = reg_ptr+((instr.instr & EXTRACT_RBS_R2)>>20);
 	*rd = *r1 + *r2;
-	printf("add x%.2d, x%.2d, x%.2d", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_RBS_R1)>>15) , ((instr.instr & EXTRACT_RBS_R2)>>20));
+	printf("add x%.2d, x%.2d, x%.2d\n", ((instr.instr & EXTRACT_R_RD)>>7) , ((instr.instr & EXTRACT_RBS_R1)>>15) , ((instr.instr & EXTRACT_RBS_R2)>>20));
 }
 
 void sub(line &instr, uint32_t * reg_ptr){

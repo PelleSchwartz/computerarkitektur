@@ -93,13 +93,13 @@ void lhu(line &instr, uint32_t * reg_ptr){
 void addi(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	printf("addi rd : %d \n", *rd);
+	printf("addi rd : %.x \n", *rd);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
-	printf("addi r1 : %d \n", *r1);
+	printf("addi r1 : %.x \n", *r1);
 	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
-	printf("addi imm: %d \n", imm);
+	printf("addi imm: %.x \n", imm);
 
-	*rd = *r1 + imm;
+	*rd = (int32_t)*r1 + imm;
 	printf("addi rd  after : %d \n", rd);
 
 }
