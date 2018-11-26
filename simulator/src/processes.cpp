@@ -121,7 +121,7 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 
 
 	case B_BEQ:
-		return beq(instr, reg_ptr);
+		return beq(instr, reg_ptr, prgm_counter);
 	case B_BNE:
 		break;
 	case B_BLT:
