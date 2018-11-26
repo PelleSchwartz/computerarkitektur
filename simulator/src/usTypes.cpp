@@ -53,6 +53,7 @@ void lui(line &instr, uint32_t * reg_ptr){
 	int32_t upprimm = (instr.instr & EXTRACT_U_IMM_31_12);
 
 	*rd = upprimm;
+	printf("lui R[%d]: %.x \n",(instr.instr & EXTRACT_R_RD)>>7,*rd);
 }
 void auipc(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter){
 	uint32_t * rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
