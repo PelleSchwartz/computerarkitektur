@@ -4,7 +4,7 @@ void slli(line &instr, uint32_t * reg_ptr){
 	uuint32_t *rd, *r1;
 	int32_t imm = 0;
 
-	imm = imm | (((int32_t)instr.instr & EXTRACT_I_IMM_11_0)>>20);
+	imm = imm | ((instr.instr & EXTRACT_I_IMM_11_0)>>20);
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 
@@ -16,7 +16,7 @@ void srai(line &instr, uint32_t * reg_ptr){
 	uuint32_t *rd, *r1;
 	int32_t imm = 0;
 
-	imm = imm | (((int32_t)instr.instr & EXTRACT_I_IMM_11_0)>>20);
+	imm = imm | ((instr.instr & EXTRACT_I_IMM_11_0)>>20);
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 
@@ -28,7 +28,7 @@ void srli(line &instr, uint32_t * reg_ptr){
 	uuint32_t *rd, *r1;
 	int32_t imm = 0;
 
-	imm = imm | (((int32_t)instr.instr & EXTRACT_I_IMM_11_0)>>20);
+	imm = imm | ((instr.instr & EXTRACT_I_IMM_11_0)>>20);
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 
