@@ -62,7 +62,7 @@ int main()
 		decoder(instruction);
 		printf("Instr name : %d \n" , instruction.name);
 		if (instruction.name == I_ECALL){
-			printf("ECALL");
+			printf("ECALL\n \n");
 			printReg(reg_ptr,32);
 			return 0;
 		}
