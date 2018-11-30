@@ -19,11 +19,12 @@ using namespace std;
 uint8_t * readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * size_ptr);
 void printReg(uint32_t* reg_ptr, int size);
 void printMem(uint8_t* mem_ptr, int size);
+void writeMem2Bin(FILE *ptr_myfile, uint32_t reg[], string name);
 int main()
 {
 	printf("Testrun: \n");
 	FILE *ptr_myfile; //file pointer
-	ptr_myfile = fopen("branchcnt.bin","rb");
+	ptr_myfile = fopen("t2.bin","rb");
 
 	uint8_t mem[MEMORY_SIZE] = {0}; // Memory array
 	uint32_t reg[32] = {0}; // registers array
@@ -121,6 +122,11 @@ uint8_t * readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * size_ptr){
 	return mem_ptr-size*4; //number of instructions
 }
 
+void writeMem2Bin(FILE *ptr_myfile, uint32_t reg[], string name){
+	name = name + "res.res";
+//	ofstream myFile (name, ios::out | ios::binary);
+//	myFile.write(reg, 100);
+}
 void printReg(uint32_t* reg_ptr, int size){
 	for (int i = 0; i < size; i++){
 		printf("x%.2d: 0x%.8X \n", i, *reg_ptr);
