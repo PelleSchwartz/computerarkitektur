@@ -9,7 +9,7 @@
 #define ITYPES_H_
 
 #include "processes.h"
-uint8_t* jalr(line &instr, uint32_t * reg_ptr);
+uint8_t* jalr(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter);
 uint8_t* jal(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter);
 void lb(line &instr, uint32_t * reg_ptr);
 void lh(line &instr, uint32_t * reg_ptr);

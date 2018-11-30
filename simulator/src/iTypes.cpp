@@ -16,7 +16,7 @@ uint8_t * jalr(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter){
 	uint32_t *rd, *r1;
 	int32_t imm = 0;
 
-	imm = imm | (((int32_t)instr.isntr & EXTRACT_I_IMM_11_0)>>20);
+	imm = imm | (((int32_t)instr.instr & EXTRACT_I_IMM_11_0)>>20);
 
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
@@ -48,7 +48,7 @@ void lb(line &instr, uint32_t * reg_ptr){
 		uint32_t *rd, *r1;
 		int32_t imm = 0;
 
-		imm = imm | (((int32_t)instr.isntr & EXTRACT_I_IMM_11_0)>>20);
+		imm = imm | (((int32_t)instr.instr & EXTRACT_I_IMM_11_0)>>20);
 
 		rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 		r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
