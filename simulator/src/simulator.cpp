@@ -16,7 +16,7 @@ using namespace std;
 
 
 //function prototypes:
-uint8_t * readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * size_ptr);
+void readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * size_ptr);
 void printReg(uint32_t* reg_ptr, int size);
 void printMem(uint8_t* mem_ptr, int size);
 void writeMem2Bin(FILE *ptr_myfile, uint32_t reg[], string name);
@@ -24,7 +24,7 @@ int main()
 {
 	printf("Testrun: \n");
 	FILE *ptr_myfile; //file pointer
-	ptr_myfile = fopen("t2.bin","rb");
+	ptr_myfile = fopen("t14.bin","rb");
 
 	uint8_t mem[MEMORY_SIZE] = {0}; // Memory array
 	uint32_t reg[32] = {0}; // registers array
@@ -34,13 +34,12 @@ int main()
 	reg[2] = (uint32_t)&mem[MEMORY_SIZE-5];
 	prgm_counter = &mem[0];
 	int num_ins = 0;
-	prgm_counter = readBin2Mem(ptr_myfile,prgm_counter,&num_ins); //Reads binary file and returns the number of instructions.
-
-	//TODO: implement stackpointer aswell, should go into doInstruction.
-
+	readBin2Mem(ptr_myfile,prgm_counter,&num_ins); //Reads binary file and returns the number of instructions.
+	printf("PC-&mem = %d",prgm_counter - &mem[0]);
+	printf("num_ins = %d", num_ins);
+	prgm_counter = &mem[0];
 	while (prgm_counter - &mem[0] < num_ins*4){
-		// TODO go through each instruction set.
-		//printMem(&mem[0], num_ins);
+
 
 		printf("\n NEXT LINE \n \n");
 
@@ -76,26 +75,30 @@ int main()
 }
 
 
-uint8_t * readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * size_ptr){
-	unsigned int read = 0;
+void readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * numins){
+	//uint32_t read = 0;
 	int counter = 0;
 	if (!ptr_myfile)
 	{
 		printf("Unable to open file!");
-		return 0;
 	}
 	fseek(ptr_myfile, 0, SEEK_END);
 	int size = ftell(ptr_myfile); // get current file pointer
 	size = size/4;
 
 	rewind(ptr_myfile);
-	printf("size: %d \n",size);
+	printf("numins: %d \n",size);
 
 	uint32_t instr32[size];
+	printf(" ");
+	printf(" ");
+	uint32_t * instr32_ptr = &instr32[0];
+	printf(" ");
+	printf(" ");
 	for ( counter=0; counter < size; counter++)
 	{
-		fread(&read,sizeof(int32_t),1,ptr_myfile);
-		instr32[counter] = read;
+		fread(instr32_ptr,sizeof(int32_t),1,ptr_myfile);
+		instr32_ptr++;
 		printf("%.8X at %d \n", instr32[counter],counter);
 	}
 	fclose(ptr_myfile);
@@ -118,8 +121,7 @@ uint8_t * readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * size_ptr){
 		mem_ptr++;
 
 	}
-	*size_ptr = size;
-	return mem_ptr-size*4; //number of instructions
+	*numins = size;
 }
 
 void writeMem2Bin(FILE *ptr_myfile, uint32_t reg[], string name){

@@ -13,6 +13,7 @@
 #include "iTypes.h"
 #include "bTypes.h"
 #include "usTypes.h"
+#include "irTypes.h"
 #include <iostream>
 using namespace std;
 
@@ -96,10 +97,13 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 		// IR-type
 
 	case IR_SLLI:
+		slli(instr, reg_ptr);
 		break;
 	case IR_SRLI:
+		srli(instr, reg_ptr);
 		break;
 	case IR_SRAI:
+		srai(instr, reg_ptr);
 		break;
 
 		// S-type

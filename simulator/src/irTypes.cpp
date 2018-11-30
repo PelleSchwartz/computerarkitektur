@@ -1,7 +1,10 @@
+#include "irTypes.h"
 using namespace std;
+#include "processes.h"
+#include "fields.h"
 
 void slli(line &instr, uint32_t * reg_ptr){
-	uuint32_t *rd, *r1;
+	uint32_t *rd, *r1;
 	int32_t imm = 0;
 
 	imm = imm | (((int32_t)instr.instr & EXTRACT_I_IMM_11_0)>>20);
@@ -13,7 +16,7 @@ void slli(line &instr, uint32_t * reg_ptr){
 }
 
 void srai(line &instr, uint32_t * reg_ptr){
-	uuint32_t *rd, *r1;
+	uint32_t *rd, *r1;
 	int32_t imm = 0;
 
 	imm = imm | (((int32_t)instr.instr & EXTRACT_I_IMM_11_0)>>20);
@@ -25,7 +28,7 @@ void srai(line &instr, uint32_t * reg_ptr){
 }
 
 void srli(line &instr, uint32_t * reg_ptr){
-	uuint32_t *rd, *r1;
+	uint32_t *rd, *r1;
 	int32_t imm = 0;
 
 	imm = imm | (((int32_t)instr.instr & EXTRACT_I_IMM_11_0)>>20);
