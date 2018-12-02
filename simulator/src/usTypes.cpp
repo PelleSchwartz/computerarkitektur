@@ -36,20 +36,23 @@ void sw(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t *r1, *r2;
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
 	r2 = reg_ptr+((instr.instr & EXTRACT_RBS_R2)>>20);
-	int32_t imm = (((int32_t)instr.instr & EXTRACT_S_IMM_11_5) >> 25) | ((instr.instr & EXTRACT_S_IMM_4_0) >> 7);
-
+	int8_t imm = (int8_t) (((instr.instr & EXTRACT_S_IMM_11_5) >> 20) | ((instr.instr & EXTRACT_S_IMM_4_0) >> 7));
 
 
 	uint8_t * sp = mem_ptr + *r1; // stack pointer
 	;
 	sp += imm;
 	*sp = (uint8_t)(*r2 & 0xFF); //save the upper byte
+	uint8_t saved = *sp;
 	sp ++;
 	*sp = (uint8_t)((*r2 & 0xFF00)>>8); //save the upper mid byte
 	sp ++;
+	saved = *sp;
 	*sp = (uint8_t)((*r2 & 0xFF0000)>>16); //save the lower mid byte
 	sp ++;
+	saved = *sp;
 	*sp = (uint8_t)((*r2 & 0xFF000000)>>24); //save the lower byte
+	saved = *sp;
 }
 void lui(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);

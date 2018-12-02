@@ -32,6 +32,7 @@ int main()
 	uint8_t * prgm_counter = &mem[0];
 	uint32_t * reg_ptr = &reg[0];
 	reg[2] = (1<<20);
+	uint8_t * memend = &mem[1<<20];
 	prgm_counter = &mem[0];
 	int num_ins = 0;
 	readBin2Mem(ptr_myfile,prgm_counter,&num_ins); //Reads binary file and returns the number of instructions.
@@ -40,13 +41,13 @@ int main()
 	prgm_counter = &mem[0];
 
 
-
+	int instructionsrunsofar = 0;
 
 	while (prgm_counter - &mem[0] < num_ins*4){
 
-		printf("\n NEXT LINE \n \n");
-
-		printf("memory step : %d \n",(prgm_counter - &mem[0])/4);
+//		printf("\n NEXT LINE \n \n");
+//
+//		printf("memory step : %d \n",(prgm_counter - &mem[0])/4);
 //		printf("%.2X ", *prgm_counter);
 //		printf("%.2X ", *(prgm_counter+1));
 //		printf("%.2X ", *(prgm_counter+2));
@@ -64,14 +65,30 @@ int main()
 		instruction.name = 0;
 		instruction.type = '\0';
 
+
+		if(mem[1]==0x164){
+
+			printf("breaK!");
+
+		}
+
+
+
 		decoder(instruction);
-		printf("Instr name : %d \n" , instruction.name);
+		//printf("Instr name : %d \n" , instruction.name);
 		if (instruction.name == I_ECALL){
 			printf("ECALL\n \n");
 			printReg(reg_ptr,32);
 			return 0;
 		}
 		prgm_counter = doInstruction(instruction, prgm_counter, reg_ptr, &mem[0]);
+		instructionsrunsofar++;
+		mem[0] = 0; //x0 should always be 0
+//		printf("Instructions run so far : %d ", instructionsrunsofar);
+//		if(reg[1] == 0x0160){
+//			printf("Warning x0 reassigned!");
+//		}
+
 	}
 
 	printReg(reg_ptr,32);

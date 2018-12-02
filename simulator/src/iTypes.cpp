@@ -12,7 +12,7 @@
 using namespace std;
 
 
-uint8_t * jalr(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter){
+uint8_t * jalr(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter,uint8_t * mem_ptr){
 	uint32_t *rd, *r1;
 	int32_t imm = 0;
 
@@ -21,7 +21,7 @@ uint8_t * jalr(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter){
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 
-	*rd = (uint32_t)(prgm_counter+4);
+	*rd = (uint32_t)(prgm_counter - mem_ptr +8);
 	//assuming that r1 contains the instr.address of the wanted next instruction, with some offsett imm.
 	//the content of r1-reg is a uint32_t, so it needs a cast to a pointer to the memory (which is a uint8_t-pointer)
 	return (uint8_t*)(*r1 + imm);
@@ -38,9 +38,9 @@ uint8_t * jal(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter,uint8_t * 
 	imm = imm | (((int32_t)instr.instr & EXTRACT_J_IMM_10_1)>>20);
 
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-
-	*rd = (uint32_t)((uint32_t)prgm_counter+8 - (uint32_t)mem_ptr);
-
+	if (rd != reg_ptr){
+		*rd = (uint32_t)((uint32_t)prgm_counter+8 - (uint32_t)mem_ptr);
+	}
 	return prgm_counter + imm; //the prgm_counter is already a uint8_t-pointer, so NO cast needed.
 }
 
@@ -64,7 +64,7 @@ void lh(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
-	int32_t imm = ((int32_t)instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
+	int8_t imm = (int8_t)((int32_t)instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 	// TODO: check for the sign in the total 32-bit word.
 	uint8_t * sp = mem_ptr + *rd;
 	uint32_t data = ((uint32_t)*(sp + imm + 1) << 8) & ((uint32_t)*(sp + imm));
@@ -76,19 +76,29 @@ void lw(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((int32_t)(instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((int32_t)(instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
-	int32_t imm = ((int32_t)instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
+
+	int8_t imm = (int8_t)((instr.instr & EXTRACT_IMM_11_0) >> 20);
 	uint8_t * sp = mem_ptr + *r1 + imm;
 	uint32_t data = ((uint32_t)*(sp));
-	data &= ((uint32_t)*(sp + imm + 1) << 8) & ((uint32_t)*(sp + imm + 2) << 16) & ((uint32_t)*(sp + imm + 3) << 24);
+	sp++;
+	data |= ((uint32_t)*(sp) << 8) ;
+	printf(" ");
+	sp++;
+	data |= ((uint32_t)*(sp) << 16);
+	printf(" ");
+	sp++;
+	data |= ((uint32_t)*(sp) << 24);
 
 	*rd = data;
+
+
 }
 void lbu(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((int32_t)(instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
-	int32_t imm = ((int32_t)instr.instr & EXTRACT_IMM_11_0) >> 20;
+	int8_t imm = (int8_t)((int32_t)instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
 	uint8_t * sp = mem_ptr + *r1;
 	uint32_t data = (uint32_t)*(sp + imm);
@@ -101,7 +111,7 @@ void lhu(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
-	int32_t imm = ((int32_t)instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
+	int8_t imm = (int8_t)((int32_t)instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
 	uint8_t * sp = mem_ptr + *r1;
 	uint32_t data = ((uint32_t)*(sp + imm)) & ((uint32_t)*(sp + imm + 1) << 8);
@@ -113,14 +123,11 @@ void lhu(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 void addi(line &instr, uint32_t * reg_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	printf("addi rd : %.x \n", *rd);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
-	printf("addi r1 : %.x \n", *r1);
 	int32_t imm = ((int32_t)(instr.instr & EXTRACT_IMM_11_0) >> 20); // TODO: is IMM interpreted as int32?
-	printf("addi imm: %.x \n", imm);
 
 	*rd = *r1 + imm;
-	printf("addi rd  after : %.x \n", *rd);
+	printf("addi x%d, x%d, %d \n", (instr.instr & EXTRACT_R_RD)>>7,(instr.instr & EXTRACT_RBS_R1)>>15,imm);
 
 }
 void slti(line &instr, uint32_t * reg_ptr){
