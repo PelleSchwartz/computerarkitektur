@@ -12,7 +12,7 @@
 #include <iostream>
 using namespace std;
 
-#define MEMORY_SIZE (4096) //size of memory array , can be increased if needed.
+#define MEMORY_SIZE (131072) //size of memory array , can be increased if needed.
 
 
 //function prototypes:
@@ -24,34 +24,39 @@ int main()
 {
 	printf("Testrun: \n");
 	FILE *ptr_myfile; //file pointer
-	ptr_myfile = fopen("t14.bin","rb");
+	ptr_myfile = fopen("loop.bin","rb");
 
-	uint8_t mem[MEMORY_SIZE] = {0}; // Memory array
+	uint8_t mem[1<<20] = {0}; // Memory array
 	uint32_t reg[32] = {0}; // registers array
 
 	uint8_t * prgm_counter = &mem[0];
 	uint32_t * reg_ptr = &reg[0];
-	reg[2] = (uint32_t)&mem[MEMORY_SIZE-5];
+	reg[2] = (1<<20);
 	prgm_counter = &mem[0];
 	int num_ins = 0;
 	readBin2Mem(ptr_myfile,prgm_counter,&num_ins); //Reads binary file and returns the number of instructions.
 	printf("PC-&mem = %d",prgm_counter - &mem[0]);
 	printf("num_ins = %d", num_ins);
 	prgm_counter = &mem[0];
-	while (prgm_counter - &mem[0] < num_ins*4){
 
+
+
+
+	while (prgm_counter - &mem[0] < num_ins*4){
 
 		printf("\n NEXT LINE \n \n");
 
-		printf("memory step : %d \n",prgm_counter - &mem[0]);
-		printf("%.2X ", *prgm_counter);
-		printf("%.2X ", *(prgm_counter+1));
-		printf("%.2X ", *(prgm_counter+2));
-		printf("%.2X \n", *(prgm_counter+3));
+		printf("memory step : %d \n",(prgm_counter - &mem[0])/4);
+//		printf("%.2X ", *prgm_counter);
+//		printf("%.2X ", *(prgm_counter+1));
+//		printf("%.2X ", *(prgm_counter+2));
+//		printf("%.2X \n", *(prgm_counter+3));
 
-		uint16_t upper = (uint16_t(*(prgm_counter+0)) << 8) | uint16_t(*(prgm_counter+1));
-		uint16_t lower = (uint16_t(*(prgm_counter+2)) << 8) | uint16_t(*(prgm_counter+3));
+		uint16_t upper = (uint16_t(*(prgm_counter+3)) << 8) | uint16_t(*(prgm_counter+2));
+		uint16_t lower = (uint16_t(*(prgm_counter+1)) << 8) | uint16_t(*(prgm_counter+0));
 		uint32_t ins = (uint32_t(upper) << 16) | lower;
+
+		printf("%.8X \n" , ins);
 
 
 		line instruction;
@@ -66,7 +71,7 @@ int main()
 			printReg(reg_ptr,32);
 			return 0;
 		}
-		prgm_counter = doInstruction(instruction, prgm_counter, reg_ptr);
+		prgm_counter = doInstruction(instruction, prgm_counter, reg_ptr, &mem[0]);
 	}
 
 	printReg(reg_ptr,32);
@@ -76,7 +81,7 @@ int main()
 
 
 void readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * numins){
-	//uint32_t read = 0;
+
 	int counter = 0;
 	if (!ptr_myfile)
 	{
@@ -89,45 +94,27 @@ void readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * numins){
 	rewind(ptr_myfile);
 	printf("numins: %d \n",size);
 
-	uint32_t instr32[size];
-	printf(" ");
-	printf(" ");
-	uint32_t * instr32_ptr = &instr32[0];
-	printf(" ");
-	printf(" ");
+	mem_ptr += 0;
 	for ( counter=0; counter < size; counter++)
 	{
-		fread(instr32_ptr,sizeof(int32_t),1,ptr_myfile);
-		instr32_ptr++;
-		printf("%.8X at %d \n", instr32[counter],counter);
+		fread(mem_ptr,sizeof(int8_t),1,ptr_myfile);
+		mem_ptr++;
+		fread(mem_ptr,sizeof(int8_t),1,ptr_myfile);
+		mem_ptr++;
+		fread(mem_ptr,sizeof(int8_t),1,ptr_myfile);
+		mem_ptr++;
+		fread(mem_ptr,sizeof(int8_t),1,ptr_myfile);
+		printf("%.2x %.2x %.2x %.2x at %d \n",*(mem_ptr), *(mem_ptr-1), *(mem_ptr-2), *(mem_ptr-3), counter);
+		mem_ptr ++;
+
 	}
 	fclose(ptr_myfile);
-
-	for(counter = 0; counter < size; counter++){
-		*mem_ptr = (((uint32_t)instr32[counter] & 0xFF000000) >> 24);
-		printf("%.2x",*mem_ptr);
-		mem_ptr++;
-
-		*mem_ptr = (uint8_t)(((uint32_t)instr32[counter] & 0x00FF0000) >> 16);
-		printf("%.2x",*mem_ptr);
-		mem_ptr++;
-
-		*mem_ptr = (uint8_t)(((uint32_t)instr32[counter] & 0x0000FF00) >> 8);
-		printf("%.2x",*mem_ptr);
-		mem_ptr++;
-
-		*mem_ptr = (uint8_t)(((uint32_t)instr32[counter] & 0x000000FF));
-		printf("%.2x\n",*mem_ptr);
-		mem_ptr++;
-
-	}
 	*numins = size;
 }
 
 void writeMem2Bin(FILE *ptr_myfile, uint32_t reg[], string name){
 	name = name + "res.res";
-//	ofstream myFile (name, ios::out | ios::binary);
-//	myFile.write(reg, 100);
+
 }
 void printReg(uint32_t* reg_ptr, int size){
 	for (int i = 0; i < size; i++){
@@ -141,7 +128,7 @@ void printMem(uint8_t* mem_ptr, int size){
 		if(!(i%4)) {
 				printf("\n");
 			}
-		printf("%.2x ", *mem_ptr);
+		printf("%.2d ", *mem_ptr);
 
 		mem_ptr++;
 	}

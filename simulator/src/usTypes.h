@@ -9,11 +9,11 @@
 #define USTYPES_H_
 #include "processes.h"
 
-void sb(line &instr, uint32_t * reg_ptr);
-void sh(line &instr, uint32_t * reg_ptr);
-void sw(line &instr, uint32_t * reg_ptr);
+void sb(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr);
+void sh(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr);
+void sw(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr);
 void lui(line &instr, uint32_t * reg_ptr);
-void auipc(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter);
+void auipc(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter, uint8_t * mem_ptr);
 
 
 

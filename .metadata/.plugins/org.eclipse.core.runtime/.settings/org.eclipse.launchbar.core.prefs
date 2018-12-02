@@ -17,5 +17,5 @@ org.eclipse.launchbar.core.descriptorType.default\:Assignment_w3.exe/activeLaunc
 org.eclipse.launchbar.core.descriptorType.default\:Assignment_w3.exe/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local
 org.eclipse.launchbar.core.descriptorType.default\:Test.exe/activeLaunchMode=run
 org.eclipse.launchbar.core.descriptorType.default\:Test.exe/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local
-org.eclipse.launchbar.core.descriptorType.default\:simulator.exe/activeLaunchMode=run
+org.eclipse.launchbar.core.descriptorType.default\:simulator.exe/activeLaunchMode=debug
 org.eclipse.launchbar.core.descriptorType.default\:simulator.exe/activeLaunchTarget=org.eclipse.launchbar.core.launchTargetType.local\:Local

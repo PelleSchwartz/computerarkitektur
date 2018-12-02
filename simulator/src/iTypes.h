@@ -10,12 +10,12 @@
 
 #include "processes.h"
 uint8_t* jalr(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter);
-uint8_t* jal(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter);
-void lb(line &instr, uint32_t * reg_ptr);
-void lh(line &instr, uint32_t * reg_ptr);
-void lw(line &instr, uint32_t * reg_ptr);
-void lbu(line &instr, uint32_t * reg_ptr);
-void lhu(line &instr, uint32_t * reg_ptr);
+uint8_t* jal(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter,uint8_t * mem_ptr);
+void lb(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr);
+void lh(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr);
+void lw(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr);
+void lbu(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr);
+void lhu(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr);
 void addi(line &instr, uint32_t * reg_ptr);
 void slti(line &instr, uint32_t * reg_ptr);
 void sltiu(line &instr, uint32_t * reg_ptr);

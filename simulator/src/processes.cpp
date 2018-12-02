@@ -21,7 +21,7 @@ using namespace std;
 
 
 
-uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr){
+uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	switch(instr.name){
 	case R_ADD:
 		add(instr, reg_ptr);
@@ -59,19 +59,19 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 	case I_JALR:
 		return jalr(instr, reg_ptr, prgm_counter);
 	case I_LB:
-		lb(instr, reg_ptr);
+		lb(instr, reg_ptr, mem_ptr);
 		break;
 	case I_LH:
-		lh(instr, reg_ptr);
+		lh(instr, reg_ptr, mem_ptr);
 		break;
 	case I_LW:
-		lw(instr, reg_ptr);
+		lw(instr, reg_ptr, mem_ptr);
 		break;
 	case I_LBU:
-		lbu(instr, reg_ptr);
+		lbu(instr, reg_ptr, mem_ptr);
 		break;
 	case I_LHU:
-		lhu(instr, reg_ptr);
+		lhu(instr, reg_ptr, mem_ptr);
 		break;
 	case I_ADDI:
 		addi(instr, reg_ptr);
@@ -109,13 +109,13 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 		// S-type
 
 	case S_SB:
-		sb(instr, reg_ptr);
+		sb(instr, reg_ptr, mem_ptr);
 		break;
 	case S_SH:
-		sh(instr, reg_ptr);
+		sh(instr, reg_ptr, mem_ptr);
 		break;
 	case S_SW:
-		sw(instr, reg_ptr);
+		sw(instr, reg_ptr, mem_ptr);
 		break;
 
 		//U-type
@@ -124,7 +124,7 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 		lui(instr, reg_ptr);
 		break;
 	case U_AUIPC:
-		auipc(instr, reg_ptr, prgm_counter);
+		auipc(instr, reg_ptr, prgm_counter, mem_ptr);
 		break;
 
 		//B-type
@@ -152,7 +152,7 @@ uint8_t * doInstruction(line &instr, uint8_t * prgm_counter, uint32_t * reg_ptr)
 
 
 	case J_JAL:
-		return jal(instr, reg_ptr, prgm_counter);
+		return jal(instr, reg_ptr, prgm_counter, mem_ptr);
 		break;
 
 	default:

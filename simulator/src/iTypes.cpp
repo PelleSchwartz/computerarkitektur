@@ -27,7 +27,7 @@ uint8_t * jalr(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter){
 	return (uint8_t*)(*r1 + imm);
 }
 
-uint8_t * jal(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter){
+uint8_t * jal(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter,uint8_t * mem_ptr){
 //Jump and link
 	uint32_t *rd, *r1;
 	int32_t imm = 0;
@@ -39,12 +39,12 @@ uint8_t * jal(line &instr, uint32_t * reg_ptr, uint8_t * prgm_counter){
 
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 
-	*rd = (uint32_t)(prgm_counter+4);
+	*rd = (uint32_t)((uint32_t)prgm_counter+8 - (uint32_t)mem_ptr);
 
 	return prgm_counter + imm; //the prgm_counter is already a uint8_t-pointer, so NO cast needed.
 }
 
-void lb(line &instr, uint32_t * reg_ptr){
+void lb(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 		uint32_t *rd, *r1;
 		int32_t imm = 0;
 
@@ -53,56 +53,60 @@ void lb(line &instr, uint32_t * reg_ptr){
 		rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 		r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15);
 
-		uint8_t * sp = (uint8_t*)*r1; //assuming that r1 contains the instr.address of the wanted next instruction
-		uint32_t data = (uint32_t)*(sp + imm); //sp is a uint8_t-pointer to a place i memory + offset imm.
+		uint8_t * sp = mem_ptr + *r1 + imm ; //assuming that r1 contains the instr.address of the wanted next instruction
+		uint32_t data = (uint32_t)*sp; //sp is a uint8_t-pointer to a place i memory + offset imm.
 		//this address-value is hen cast to uint32_t value so that it can be put in the reg file.
 
 		*rd = data;
 }
 
-void lh(line &instr, uint32_t * reg_ptr){
+void lh(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
-	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
+	int32_t imm = ((int32_t)instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 	// TODO: check for the sign in the total 32-bit word.
-	uint8_t * sp = (uint8_t*) *rd;
-	uint32_t data = ((uint32_t)*(sp + imm) << 8) & ((uint32_t)*(sp + imm + 1));
+	uint8_t * sp = mem_ptr + *rd;
+	uint32_t data = ((uint32_t)*(sp + imm + 1) << 8) & ((uint32_t)*(sp + imm));
 
 
 	*rd = data;
 }
-void lw(line &instr, uint32_t * reg_ptr){
+void lw(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t * rd, *r1;
-	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
-	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
-	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
+	rd = reg_ptr+((int32_t)(instr.instr & EXTRACT_R_RD)>>7);
+	r1 = reg_ptr+((int32_t)(instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
+	int32_t imm = ((int32_t)instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
-	uint8_t * sp = (uint8_t*) *rd;
-	uint32_t data = ((uint32_t)*(sp + imm) << 24) & ((uint32_t)*(sp + imm + 1) << 16) & ((uint32_t)*(sp + imm + 2) << 8) & ((uint32_t)*(sp + imm + 3));
+	uint8_t * sp = mem_ptr + *r1 + imm;
+	uint32_t data = ((uint32_t)*(sp));
+	data &= ((uint32_t)*(sp + imm + 1) << 8) & ((uint32_t)*(sp + imm + 2) << 16) & ((uint32_t)*(sp + imm + 3) << 24);
 
 	*rd = data;
 }
-void lbu(line &instr, uint32_t * reg_ptr){
+void lbu(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t * rd, *r1;
-	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
+	rd = reg_ptr+((int32_t)(instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
-	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20;
+	int32_t imm = ((int32_t)instr.instr & EXTRACT_IMM_11_0) >> 20;
 
-	uint8_t * sp = (uint8_t*) *rd;
+	uint8_t * sp = mem_ptr + *r1;
 	uint32_t data = (uint32_t)*(sp + imm);
 
+	data |= *(mem_ptr + *rd - (*rd % 4)) & 0x80;
+
 	*rd = data;
 }
-void lhu(line &instr, uint32_t * reg_ptr){
+void lhu(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t * rd, *r1;
 	rd = reg_ptr+((instr.instr & EXTRACT_R_RD)>>7);
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
-	int32_t imm = (instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
+	int32_t imm = ((int32_t)instr.instr & EXTRACT_IMM_11_0) >> 20; // TODO: is IMM interpreted as int32?
 
-	uint8_t * sp = (uint8_t*) *rd;
-	uint32_t data = ((uint32_t)*(sp + imm) << 8) & ((uint32_t)*(sp + imm + 1));
+	uint8_t * sp = mem_ptr + *r1;
+	uint32_t data = ((uint32_t)*(sp + imm)) & ((uint32_t)*(sp + imm + 1) << 8);
 
+	data |= *(mem_ptr + *rd - (*rd % 4)) & 0x80;
 
 	*rd = data;
 }
