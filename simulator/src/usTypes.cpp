@@ -11,26 +11,26 @@
 
 void sb(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t *r1, *r2;
-	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
+	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // "Stack pointer" (could be any pointer though)
 	r2 = reg_ptr+((instr.instr & EXTRACT_RBS_R2)>>20);
-	int32_t imm = (((int32_t)instr.instr & EXTRACT_S_IMM_11_5) >> 25) | ((instr.instr & EXTRACT_S_IMM_4_0) >> 7);
+	int32_t imm = ((int32_t)instr.instr & EXTRACT_S_IMM_11_5) >> 20 | ((instr.instr & EXTRACT_S_IMM_4_0) >> 7);
 	// TODO: check for the sign in the total 32-bit word.
 
-	uint8_t * sp = mem_ptr + *r1; // stack pointer
+	uint8_t * sp = mem_ptr + *r1 + imm; // stack pointer
 
-	*(sp + imm) = (uint8_t)(*r2 & 0xFF); //save the byte
+	*sp = (uint8_t)(*r2 & 0xFF); //save the byte
 }
 void sh(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t *r1, *r2;
 	r1 = reg_ptr+((instr.instr & EXTRACT_RBS_R1)>>15); // Stack pointer (could be any pointer though)
 	r2 = reg_ptr+((instr.instr & EXTRACT_RBS_R2)>>20);
-	int32_t imm = (((int32_t)instr.instr & EXTRACT_S_IMM_11_5) >> 25) | ((instr.instr & EXTRACT_S_IMM_4_0) >> 7);
+	int32_t imm = (((int32_t)instr.instr & EXTRACT_S_IMM_11_5) >> 20) | ((instr.instr & EXTRACT_S_IMM_4_0) >> 7);
 
-	uint8_t * sp = mem_ptr + *r1; // stack pointer
+	uint8_t * sp = mem_ptr + *r1 + imm; // stack pointer
 
-	*(sp + imm + 1) = (uint8_t)((*r2 & 0xFF00)>>8); //save the upper byte
+	*(sp + 1) = (uint8_t)((*r2 & 0xFF00)>>8); //save the upper byte
 
-	*(sp + imm) = (uint8_t)(*r2 & 0xFF);; //save the lower byte
+	*(sp) = (uint8_t)(*r2 & 0xFF);; //save the lower byte
 }
 void sw(line &instr, uint32_t * reg_ptr, uint8_t * mem_ptr){
 	uint32_t *r1, *r2;

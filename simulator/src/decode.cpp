@@ -50,6 +50,8 @@ void decoder(line &a){
       a.name = J_JAL;
       break;
     default:
+	  a.type = 'x';
+	  a.name = 0;
       break;
   }
 }

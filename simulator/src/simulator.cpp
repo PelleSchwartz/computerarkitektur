@@ -10,33 +10,39 @@
 #include "func3.h"
 #include "processes.h"
 #include <iostream>
+#include <fstream>
+#include <string.h>
 using namespace std;
 
-#define MEMORY_SIZE (131072) //size of memory array , can be increased if needed.
 
 
 //function prototypes:
 void readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * size_ptr);
 void printReg(uint32_t* reg_ptr, int size);
 void printMem(uint8_t* mem_ptr, int size);
-void writeMem2Bin(FILE *ptr_myfile, uint32_t reg[], string name);
+void writeMem2Bin(FILE *ptr_myfile, uint32_t * reg);
 int main()
 {
 	printf("Testrun: \n");
 	FILE *ptr_myfile; //file pointer
-	ptr_myfile = fopen("loop.bin","rb");
+	ptr_myfile = fopen("addpos.bin","rb");
 
 	uint8_t mem[1<<20] = {0}; // Memory array
 	uint32_t reg[32] = {0}; // registers array
 
 	uint8_t * prgm_counter = &mem[0];
 	uint32_t * reg_ptr = &reg[0];
-	reg[2] = (1<<20);
-	uint8_t * memend = &mem[1<<20];
+
+
+
 	prgm_counter = &mem[0];
 	int num_ins = 0;
 	readBin2Mem(ptr_myfile,prgm_counter,&num_ins); //Reads binary file and returns the number of instructions.
-	printf("PC-&mem = %d",prgm_counter - &mem[0]);
+
+	printMem(&mem[0],num_ins);
+
+
+	printf("\nPC-&mem = %d\n",prgm_counter - &mem[0]);
 	printf("num_ins = %d", num_ins);
 	prgm_counter = &mem[0];
 
@@ -79,7 +85,7 @@ int main()
 		if (instruction.name == I_ECALL){
 			printf("ECALL\n \n");
 			printReg(reg_ptr,32);
-			return 0;
+			break;
 		}
 		prgm_counter = doInstruction(instruction, prgm_counter, reg_ptr, &mem[0]);
 		instructionsrunsofar++;
@@ -91,6 +97,9 @@ int main()
 
 	}
 
+	ptr_myfile = fopen("result.res","w+");
+
+	writeMem2Bin(ptr_myfile, reg_ptr);
 	printReg(reg_ptr,32);
 
 	return 0;
@@ -110,7 +119,6 @@ void readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * numins){
 
 	rewind(ptr_myfile);
 	printf("numins: %d \n",size);
-
 	mem_ptr += 0;
 	for ( counter=0; counter < size; counter++)
 	{
@@ -127,10 +135,50 @@ void readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * numins){
 	}
 	fclose(ptr_myfile);
 	*numins = size;
+//
+//	string filename = "loop.bin";
+//	int i = 0;
+//	streampos fileSize;
+//
+//	char * temporaryMemory;
+//	temporaryMemory = new char [2];
+//
+//	ifstream file (filename, ios::in|ios::binary|ios::ate);//open file and set pointer at end of file
+//	if (file.is_open())
+//	{
+//		cout << "file is open" << endl;
+//		fileSize = file.tellg(); //use pointer to get file size
+//		file.seekg (0, ios::beg); //set pointer to beginning of file
+//		while(file.tellg() <= fileSize-(streampos)2){
+//			file.read (temporaryMemory, 2*sizeof(char)); //should also update file pointer
+//			*mem_ptr = (uint8_t)temporaryMemory[0];
+//			mem_ptr++;
+//			i++;
+//			*mem_ptr = (uint8_t)temporaryMemory[1];
+//			mem_ptr++;
+//			i++;
+//		}
+//		cout << "done reading in data" << endl;
+//	}else {
+//		cout << "Unable to open file" << endl;
+//		return;
+//	}
+//	*numins = i/4;
+	return;
 }
 
-void writeMem2Bin(FILE *ptr_myfile, uint32_t reg[], string name){
-	name = name + "res.res";
+void writeMem2Bin(FILE *ptr_myfile, uint32_t * reg){
+	uint32_t * reg_ptr = &reg[0];
+
+	rewind(ptr_myfile);
+		fwrite(reg, 32*sizeof(uint32_t)-1, 1, ptr_myfile);
+		reg_ptr ++;
+
+	//	for(int i =0; i < 32;i++){
+//		fwrite(reg_ptr,sizeof(int32_t),1,ptr_myfile);
+//		reg_ptr++;
+//	}
+	fclose(ptr_myfile);
 
 }
 void printReg(uint32_t* reg_ptr, int size){
@@ -143,9 +191,9 @@ void printReg(uint32_t* reg_ptr, int size){
 void printMem(uint8_t* mem_ptr, int size){
 	for(int i = 0; i < size*4; i++){
 		if(!(i%4)) {
-				printf("\n");
+				printf("\n %.3d " , i/4+1);
 			}
-		printf("%.2d ", *mem_ptr);
+		printf("%.2x ", *mem_ptr);
 
 		mem_ptr++;
 	}
