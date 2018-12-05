@@ -12,9 +12,10 @@
 #include <iostream>
 #include <fstream>
 #include <string.h>
+#include <stdio.h>
 using namespace std;
 
-
+#define savename "result.res"
 
 //function prototypes:
 void readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * size_ptr);
@@ -23,9 +24,19 @@ void printMem(uint8_t* mem_ptr, int size);
 void writeMem2Bin(FILE *ptr_myfile, uint32_t * reg);
 int main()
 {
+	cout << "Result will be made in file named result.res" << endl;
+	cout << "Enter file name: " << endl;
+
+	string input = "";
+	cin >> input;
+	char tab2[1024] = "\0";
+
+
+	strcpy(&tab2[0], input.c_str());
+	//char str[] = {input};
 	printf("Testrun: \n");
 	FILE *ptr_myfile; //file pointer
-	ptr_myfile = fopen("addpos.bin","rb");
+	ptr_myfile = fopen(tab2,"rb");
 
 	uint8_t mem[1<<20] = {0}; // Memory array
 	uint32_t reg[32] = {0}; // registers array
@@ -50,38 +61,19 @@ int main()
 	int instructionsrunsofar = 0;
 
 	while (prgm_counter - &mem[0] < num_ins*4){
-
-//		printf("\n NEXT LINE \n \n");
-//
-//		printf("memory step : %d \n",(prgm_counter - &mem[0])/4);
-//		printf("%.2X ", *prgm_counter);
-//		printf("%.2X ", *(prgm_counter+1));
-//		printf("%.2X ", *(prgm_counter+2));
-//		printf("%.2X \n", *(prgm_counter+3));
-
 		uint16_t upper = (uint16_t(*(prgm_counter+3)) << 8) | uint16_t(*(prgm_counter+2));
 		uint16_t lower = (uint16_t(*(prgm_counter+1)) << 8) | uint16_t(*(prgm_counter+0));
 		uint32_t ins = (uint32_t(upper) << 16) | lower;
 
 		printf("%.8X \n" , ins);
 
-
 		line instruction;
 		instruction.instr = ins;
 		instruction.name = 0;
 		instruction.type = '\0';
 
-
-		if(mem[1]==0x164){
-
-			printf("breaK!");
-
-		}
-
-
-
 		decoder(instruction);
-		//printf("Instr name : %d \n" , instruction.name);
+
 		if (instruction.name == I_ECALL){
 			printf("ECALL\n \n");
 			printReg(reg_ptr,32);
@@ -90,18 +82,16 @@ int main()
 		prgm_counter = doInstruction(instruction, prgm_counter, reg_ptr, &mem[0]);
 		instructionsrunsofar++;
 		mem[0] = 0; //x0 should always be 0
-//		printf("Instructions run so far : %d ", instructionsrunsofar);
-//		if(reg[1] == 0x0160){
-//			printf("Warning x0 reassigned!");
-//		}
 
 	}
-
-	ptr_myfile = fopen("result.res","w+");
+	ptr_myfile = fopen(savename,"w+");
 
 	writeMem2Bin(ptr_myfile, reg_ptr);
 	printReg(reg_ptr,32);
 
+
+	printf("Press ENTER key to Continue\n");
+	cin >> input;
 	return 0;
 }
 
@@ -133,52 +123,21 @@ void readBin2Mem(FILE *ptr_myfile, uint8_t * mem_ptr, int * numins){
 		mem_ptr ++;
 
 	}
-	fclose(ptr_myfile);
-	*numins = size;
-//
-//	string filename = "loop.bin";
-//	int i = 0;
-//	streampos fileSize;
-//
-//	char * temporaryMemory;
-//	temporaryMemory = new char [2];
-//
-//	ifstream file (filename, ios::in|ios::binary|ios::ate);//open file and set pointer at end of file
-//	if (file.is_open())
-//	{
-//		cout << "file is open" << endl;
-//		fileSize = file.tellg(); //use pointer to get file size
-//		file.seekg (0, ios::beg); //set pointer to beginning of file
-//		while(file.tellg() <= fileSize-(streampos)2){
-//			file.read (temporaryMemory, 2*sizeof(char)); //should also update file pointer
-//			*mem_ptr = (uint8_t)temporaryMemory[0];
-//			mem_ptr++;
-//			i++;
-//			*mem_ptr = (uint8_t)temporaryMemory[1];
-//			mem_ptr++;
-//			i++;
-//		}
-//		cout << "done reading in data" << endl;
-//	}else {
-//		cout << "Unable to open file" << endl;
-//		return;
-//	}
-//	*numins = i/4;
+
 	return;
 }
 
 void writeMem2Bin(FILE *ptr_myfile, uint32_t * reg){
-	uint32_t * reg_ptr = &reg[0];
-
-	rewind(ptr_myfile);
-		fwrite(reg, 32*sizeof(uint32_t)-1, 1, ptr_myfile);
-		reg_ptr ++;
-
-	//	for(int i =0; i < 32;i++){
-//		fwrite(reg_ptr,sizeof(int32_t),1,ptr_myfile);
-//		reg_ptr++;
-//	}
 	fclose(ptr_myfile);
+
+	int k = 0;
+
+	ofstream file(savename, ios::binary);
+	while(k<32){
+		file.write((char*)reg,sizeof(uint32_t));
+		reg++;
+		k++;
+	}
 
 }
 void printReg(uint32_t* reg_ptr, int size){

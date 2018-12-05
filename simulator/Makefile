@@ -1,0 +1,2 @@
+simulator: simulator.cpp btypes.cpp decode.cpp func3.cpp irTypes.cpp iTypes.cpp processes.cpp rTypes.cpp usTypes.cpp
+	g++ -o simulator simulator.cpp btypes.cpp decode.cpp func3.cpp irTypes.cpp iTypes.cpp processes.cpp rTypes.cpp usTypes.cpp -
